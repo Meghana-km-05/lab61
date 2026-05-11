@@ -10,7 +10,8 @@ pipeline {
 
         stage('Git Checkout') {
             steps {
-                git 'https://github.com/Meghana-km-05/lab61.git'
+                git branch: 'main',
+                url: 'https://github.com/Meghana-km-05/lab61.git'
             }
         }
 
