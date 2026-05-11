@@ -2,13 +2,13 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven3'
-        jdk 'JDK17'
+        maven 'Maven'
+        jdk 'JDK21'
     }
 
     stages {
 
-        stage('Checkout') {
+        stage('Git Checkout') {
             steps {
                 git 'https://github.com/Meghana-km-05/lab61.git'
             }
@@ -16,20 +16,9 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'mvn clean compile'
+                sh 'mvn clean install'
             }
         }
 
-        stage('Test') {
-            steps {
-                sh 'mvn test'
-            }
-        }
-
-        stage('Package') {
-            steps {
-                sh 'mvn package'
-            }
-        }
     }
 }
