@@ -1,0 +1,66 @@
+Jenkinsfile
+pipeline {
+    agent any
+
+    environment {
+        DOCKERHUB_CREDENTIALS = 'dockerhub-creds' // The ID you'll set in Jenkins
+        APP_NAME = "likhithahm/flask-app"
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh "docker build -t ${APP_NAME}:${BUILD_NUMBER} ."
+                }
+            }
+        }
+
+        stage('Login and Push') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: "${DOCKERHUB_CREDENTIALS}",
+                    passwordVariable: 'PASS',
+                    usernameVariable: 'USER'
+                )]) {
+
+                    sh "echo ${PASS} | docker login -u ${USER} --password-stdin"
+
+                    sh "docker push ${APP_NAME}:${BUILD_NUMBER}"
+                }
+            }
+        }
+    }
+}
+
+
+git init
+git config --global user.name "medha7299"
+git config --global user.email "medhagaonkar5@gmail.com"
+git commit -m "initial commit"
+git remote add origin https://github.com/medha7299/DockerP.git
+git branch -M master
+git push -u origin master
+sudo docker build -t my-app .
+sudo docker tag my-app:latest medha7299/my-app:latest
+sudo docker images
+sudo docker rm -f container
+sudo docker run -d -p 5001:5001 --name container medha7299/my-app:latest
+
+
+
+Terminal2
+sudo rm jenkins.war
+sudo rm -rf ~/.jenkins
+wget https://get.jenkins.io/war-stable/latest/jenkins.war
+java -jar jenkins.war --httpPort=8081
+open in local host 
+click on setting in that credentials put ur docker username and password and id as dockerhub-cred which is specified in pipeline code
+go to new item pipe line select scm git repo url add credenials and then build
